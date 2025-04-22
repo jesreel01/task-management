@@ -18,3 +18,8 @@ client/dist/
 client/.env
 client/.next/
 node_modules
+
+server/__pycache__
+server/.env
+server/env
+server/test_db.db
