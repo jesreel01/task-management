@@ -1,25 +1,86 @@
+# Dependencies
 **/node_modules/
-**/dist/
+node_modules/
 
+# Build outputs
+**/dist/
+client/.next/
+client/out/
+client/build/
+
+# Environment variables
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+client/.env
 client/.env.local
 client/.env.development
 client/.env.production
+server/.env
 
-client/.next/
+# Python
+server/__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+server/env/
+server/venv/
+server/.venv/
+server/test_db.db
+*.so
+.Python
+server/build/
+develop-eggs/
+server/dist/
+server/downloads/
+server/eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
+# Terraform
+infra/.terraform/
+infra/*.tfstate.backup
+infra/.terraform.tfstate.lock.info
+infra/terraform.tfvars
+infra/override.tf
+infra/override.tf.json
+infra/*_override.tf
+infra/*_override.tf.json
+infra/.terragrunt-cache/
+
+# OS specific
 .DS_Store
 Thumbs.db
+.directory
+desktop.ini
 
+# Editor directories and files
+.idea/
 .vscode/
+*.swp
+*.swo
+*~
 
-client/node_modules/
-client/dist/
-client/.env
-client/.next/
-node_modules
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-server/__pycache__
-server/.env
-server/env
-server/test_db.db
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.vercel
+.next
+
