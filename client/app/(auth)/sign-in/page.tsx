@@ -1,22 +1,25 @@
 "use client"
 
-import { ActionState, signIn } from "@/app/actions/auth"
+import { signIn } from "@/app/actions/signIn"
+import { ActionState, SignInFields } from "@/app/actions/types"
 import AuthForm from "@/components/AuthForm"
 import AuthCard from "@/components/AuthForm"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import React, { useActionState } from "react"
 
 const SignInPage = () => {
-  const [state, formAction, isPending] = useActionState<ActionState, FormData>(signIn, {
-    success: false,
-    fields: {
-      email: "",
-      password: "",
-    },
-  })
+  const [state, formAction, isPending] = useActionState<ActionState<SignInFields>, FormData>(
+    signIn,
+    {
+      success: false,
+      fields: {
+        email: "",
+        password: "",
+      },
+    }
+  )
 
   return (
     <AuthForm action={formAction}>
