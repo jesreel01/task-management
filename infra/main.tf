@@ -9,19 +9,23 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-southeast-1"
+  region  = "ap-southeast-1"
   profile = "prac"
 }
 
 resource "aws_cognito_user_pool" "task_management" {
-  name = "my-user-pool"
+  name = "task-management-user-pool"
 
   username_attributes      = ["email"]
   auto_verified_attributes = ["email"]
+
+  mfa_configuration = "OFF"
+
+
 }
 
-resource "aws_cognito_user_pool_client" "task_managent" {
-  name         = "my-user-pool-client"
+resource "aws_cognito_user_pool_client" "task_management" {
+  name         = "task-management-client"
   user_pool_id = aws_cognito_user_pool.task_management.id
 
   generate_secret = false
@@ -33,3 +37,12 @@ resource "aws_cognito_user_pool_client" "task_managent" {
     "ALLOW_USER_SRP_AUTH"
   ]
 }
+
+output "user_pool_id" {
+  value = aws_cognito_user_pool.task_management.id
+}
+
+output "user_pool_client_id" {
+  value = aws_cognito_user_pool_client.task_management.id
+}
+
