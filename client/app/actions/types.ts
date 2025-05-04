@@ -1,4 +1,3 @@
-
 export type ActionState<T> = {
   success: boolean
   message?: string
@@ -6,7 +5,13 @@ export type ActionState<T> = {
   fields: T
 }
 
+
 export type SignInFields = {
   email: string
   password: string
+}
+
+export type VerifyEmailField = {
+  email: string
+  code: string
 }
