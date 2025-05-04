@@ -47,23 +47,22 @@ wheels/
 *.egg
 
 # Terraform
-infra/.terraform/
-infra/*.tfstate.backup
-infra/.terraform.tfstate.lock.info
-infra/terraform.tfvars
-infra/override.tf
-infra/override.tf.json
-infra/*_override.tf
-infra/*_override.tf.json
-infra/.terragrunt-cache/
-infra/tfplan
-infra/*.tfstate
-**/.terraform/*
-.terraform.lock.hcl
-*.tfvars
-!example.tfvars
-crash.log
-crash.*.log
+**/.terraform/
+**/*.tfstate.backup
+**/.terraform.tfstate.lock.info
+**/terraform.tfvars
+**/override.tf
+**/override.tf.json
+**/*_override.tf
+**/*_override.tf.json
+**/.terragrunt-cache/
+**/tfplan
+**/*.tfstate
+**/.terraform.lock.hcl
+**/*.tfvars
+**/!example.tfvars
+**/crash.log
+**/crash.*.log
 
 # OS specific
 .DS_Store
