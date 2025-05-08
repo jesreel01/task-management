@@ -17,7 +17,6 @@ const VerifyEmail = ({ email }: { email: string }) => {
     {
       fields: {
         code: values.join(),
-        email: email,
       },
       success: false,
     }
@@ -26,7 +25,6 @@ const VerifyEmail = ({ email }: { email: string }) => {
   const handleSubmit = (code: string) => {
     startTransition(() =>
       dispatch({
-        email: email,
         code: code,
       })
     )

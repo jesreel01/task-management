@@ -73,6 +73,12 @@ export async function signUp(
 
     cookieStore.set("signup_email", values.email, {
       expires: new Date(Date.now() + 15 * 60 * 1000),
+      httpOnly: true,
+    })
+
+    cookieStore.set("temp_pass", values.password, {
+      expires: new Date(Date.now() + 15 * 60 * 1000),
+      httpOnly: true,
     })
 
     if (!response.UserSub) {
