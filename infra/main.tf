@@ -6,6 +6,14 @@ terraform {
     }
   }
   required_version = "> 1.2.0"
+
+  backend "s3" {
+    bucket = "terraform-state-taskmanagement-254e456e"
+    key    = "task-management/terraform.tfstate"
+    region = "ap-southeast-1"
+    profile = "prac"
+    dynamodb_table = "terraform-state-lock-taskmanagement-254e456e"
+  }
 }
 
 provider "aws" {
