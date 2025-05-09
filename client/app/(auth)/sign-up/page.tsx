@@ -29,7 +29,7 @@ const SignUpPage = () => {
       <h6 className="mb-5">Sign Up</h6>
       <Input
         defaultValue={fields.firstName}
-        name="first_name"
+        name="firstName"
         placeholder="First name"
         className="mb-4"
         required
@@ -37,7 +37,7 @@ const SignUpPage = () => {
 
       <Input
         defaultValue={fields.lastName}
-        name="last_name"
+        name="lastName"
         placeholder="Last name"
         className="mb-4"
         required

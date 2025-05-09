@@ -1,6 +1,9 @@
+
+import { verifySession } from "@/lib/auth"
 import React from "react"
 
-const DashboardPage = () => {
+const  DashboardPage = async  () => {
+  const payload = await verifySession()
   return <div>DashboardPage</div>
 }
 

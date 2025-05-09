@@ -11,17 +11,14 @@ import {
   setAuthCookies,
 } from "@/lib/auth"
 
-const CLIENT_ID = process.env.COGNITO_CLIENT_ID
-const REGION = process.env.AWS_REGION
-
 export async function verifyEmail(
   _prevState: any,
   { code }: VerifyEmailField
 ): Promise<ActionState<VerifyEmailField>> {
   const cookieStore = await cookies()
 
-  const email = cookieStore.get("signup_email")?.value as string
-  const password = cookieStore.get("temp_pass")?.value as string
+  const email = cookieStore.get("signUpEmail")?.value as string
+  const password = cookieStore.get("tempPass")?.value as string
 
   try {
     const client = getCognitoClient()

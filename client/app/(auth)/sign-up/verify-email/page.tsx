@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 
 const VerifyEmailPage = async () => {
   const cookieStore = await cookies()
-  const email = cookieStore.get("signup_email")?.value
+  const email = cookieStore.get("signUpEmail")?.value
 
   if (!email) {
     notFound()

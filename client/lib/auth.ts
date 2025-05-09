@@ -7,13 +7,45 @@ import {
   SignUpCommand,
   SignUpCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider"
+import { createRemoteJWKSet, decodeJwt, jwtVerify } from "jose"
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
-const CLIENT_ID = process.env.COGNITO_CLIENT_ID
-const REGION = process.env.AWS_REGION
+const CLIENT_ID = process.env.COGNITO_CLIENT_ID!
+const REGION = process.env.AWS_REGION!
+const USER_POOL_ID = process.env.COGNITO_USER_POOL_ID
+
+const issuer = `https://cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}`
+const jwks = createRemoteJWKSet(new URL(`${issuer}/.well-known/jwks.json`))
 
 export function getCognitoClient() {
   return new CognitoIdentityProviderClient({ region: REGION })
+}
+
+export async function verifySession() {
+  const cookieStore = await cookies()
+
+  const accessToken = cookieStore.get("accessToken")?.value
+  if (!accessToken) throw new Error("No access token")
+
+  const unverified = decodeJwt(accessToken)
+  if (unverified.token_use !== "access") {
+    throw new Error("Expected an access token")
+  }
+
+  try {
+    const { payload } = await jwtVerify(accessToken, jwks, {
+      issuer,
+      algorithms: ["RS256"],
+    })
+
+    return payload
+  } catch (error) {
+    console.error(error)
+
+    redirect("/sign-in")
+  }
 }
 
 export async function signUpUser(
@@ -62,10 +94,10 @@ export function setAuthCookies(
   refreshToken?: string
 ) {
   if (accessToken) {
-    cookieStore.set("access_token", accessToken, { httpOnly: true })
+    cookieStore.set("accessToken", accessToken, { httpOnly: true })
   }
   if (refreshToken) {
-    cookieStore.set("refresh_token", refreshToken, { httpOnly: true })
+    cookieStore.set("refreshToken", refreshToken, { httpOnly: true })
   }
 }
 
@@ -75,11 +107,11 @@ export function setSignUpCookies(
   password: string
 ) {
   const expires = new Date(Date.now() + 15 * 60 * 1000)
-  cookieStore.set("signup_email", email, { expires, httpOnly: true })
-  cookieStore.set("temp_pass", password, { expires, httpOnly: true })
+  cookieStore.set("signUpEmail", email, { expires, httpOnly: true })
+  cookieStore.set("tempPass", password, { expires, httpOnly: true })
 }
 
 export function clearSignupCookies(cookieStore: ReadonlyRequestCookies) {
-  cookieStore.delete("signup_email")
-  cookieStore.delete("temp_pass")
+  cookieStore.delete("signUpEmail")
+  cookieStore.delete("tempPass")
 }
