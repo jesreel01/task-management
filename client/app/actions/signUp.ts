@@ -10,8 +10,8 @@ const CLIENT_ID = process.env.COGNITO_CLIENT_ID
 const REGION = process.env.AWS_REGION
 
 const signUpSchema = z.object({
-  first_name: z.string().min(1, { message: "First name is required" }),
-  last_name: z.string().min(1, { message: "Last name is required" }),
+  firstName: z.string().min(1, { message: "First name is required" }),
+  lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(8, { message: "Password must be at least 8 characters long" }),
 })
@@ -25,8 +25,8 @@ export async function signUp(
   const cookieStore = await cookies()
 
   const values: SignUpFields = {
-    first_name: payload.get("first_name") as string,
-    last_name: payload.get("last_name") as string,
+    firstName: payload.get("firstName") as string,
+    lastName: payload.get("lastName") as string,
     email: payload.get("email") as string,
     password: payload.get("password") as string,
   }
@@ -38,8 +38,8 @@ export async function signUp(
       success: false,
       message: "Validation failed",
       fields: {
-        first_name: values.first_name,
-        last_name: values.last_name,
+        firstName: values.firstName,
+        lastName: values.lastName,
         email: values.email,
         password: values.password,
       },
@@ -59,8 +59,8 @@ export async function signUp(
         success: false,
         message: "Sign up failed, please try again.",
         fields: {
-          first_name: values.first_name,
-          last_name: values.last_name,
+          firstName: values.firstName,
+          lastName: values.lastName,
           email: values.email,
           password: values.password,
         },
@@ -71,8 +71,8 @@ export async function signUp(
       success: false,
       message: error.message || "Failed to sign up.",
       fields: {
-        first_name: values.first_name,
-        last_name: values.last_name,
+        firstName: values.firstName,
+        lastName: values.lastName,
         email: values.email,
         password: values.password,
       },

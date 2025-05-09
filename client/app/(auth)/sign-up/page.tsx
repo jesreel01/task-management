@@ -18,8 +18,8 @@ const SignUpPage = () => {
     fields: {
       email: "",
       password: "",
-      first_name: "",
-      last_name: "",
+      firstName: "",
+      lastName: "",
     },
   })
 
@@ -28,7 +28,7 @@ const SignUpPage = () => {
       <h5 className="mb-6 text-2xl">Task Management</h5>
       <h6 className="mb-5">Sign Up</h6>
       <Input
-        defaultValue={fields.first_name}
+        defaultValue={fields.firstName}
         name="first_name"
         placeholder="First name"
         className="mb-4"
@@ -36,7 +36,7 @@ const SignUpPage = () => {
       />
 
       <Input
-        defaultValue={fields.last_name}
+        defaultValue={fields.lastName}
         name="last_name"
         placeholder="Last name"
         className="mb-4"
