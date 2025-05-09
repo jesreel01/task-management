@@ -16,6 +16,20 @@ export function getCognitoClient() {
   return new CognitoIdentityProviderClient({ region: REGION })
 }
 
+export async function signUpUser(
+  client: CognitoIdentityProviderClient,
+  email: string,
+  password: string
+) {
+  const input: SignUpCommandInput = {
+    ClientId: CLIENT_ID,
+    Username: email,
+    Password: password,
+    UserAttributes: [{ Name: "email", Value: email }],
+  }
+  return client.send(new SignUpCommand(input))
+}
+
 export async function confirmUserSignUp(
   client: CognitoIdentityProviderClient,
   email: string,
@@ -37,10 +51,7 @@ export async function authenticateUser(
   const input: InitiateAuthCommandInput = {
     AuthFlow: "USER_PASSWORD_AUTH",
     ClientId: CLIENT_ID,
-    AuthParameters: {
-      USERNAME: email,
-      PASSWORD: password,
-    },
+    AuthParameters: { USERNAME: email, PASSWORD: password },
   }
   return client.send(new InitiateAuthCommand(input))
 }
@@ -58,41 +69,14 @@ export function setAuthCookies(
   }
 }
 
-export async function signUpUser(
-  client: CognitoIdentityProviderClient,
-  email: string,
-  password: string
-) {
-  const input: SignUpCommandInput = {
-    ClientId: CLIENT_ID,
-    Username: email,
-    Password: password,
-    UserAttributes: [
-      {
-        Name: "email",
-        Value: email,
-      },
-    ],
-  }
-
-  const command = new SignUpCommand(input)
-  return client.send(command)
-}
-
 export function setSignUpCookies(
   cookieStore: ReadonlyRequestCookies,
   email: string,
   password: string
 ) {
-  cookieStore.set("signup_email", email, {
-    expires: new Date(Date.now() + 15 * 60 * 1000),
-    httpOnly: true,
-  })
-
-  cookieStore.set("temp_pass", password, {
-    expires: new Date(Date.now() + 15 * 60 * 1000),
-    httpOnly: true,
-  })
+  const expires = new Date(Date.now() + 15 * 60 * 1000)
+  cookieStore.set("signup_email", email, { expires, httpOnly: true })
+  cookieStore.set("temp_pass", password, { expires, httpOnly: true })
 }
 
 export function clearSignupCookies(cookieStore: ReadonlyRequestCookies) {
