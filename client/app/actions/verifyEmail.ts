@@ -1,15 +1,15 @@
 "use server"
 
-import {
-  CognitoIdentityProviderClient,
-  ConfirmSignUpCommand,
-  ConfirmSignUpCommandInput,
-  InitiateAuthCommand,
-  InitiateAuthCommandInput,
-} from "@aws-sdk/client-cognito-identity-provider"
 import { ActionState, VerifyEmailField } from "./types"
 import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
+import {
+  authenticateUser,
+  clearSignupCookies,
+  confirmUserSignUp,
+  getCognitoClient,
+  setAuthCookies,
+} from "@/lib/auth"
 
 const CLIENT_ID = process.env.COGNITO_CLIENT_ID
 const REGION = process.env.AWS_REGION
@@ -24,33 +24,18 @@ export async function verifyEmail(
   const password = cookieStore.get("temp_pass")?.value as string
 
   try {
-    const client = new CognitoIdentityProviderClient({ region: REGION })
+    const client = getCognitoClient()
 
-    const input: ConfirmSignUpCommandInput = {
-      Username: email,
-      ClientId: CLIENT_ID,
-      ConfirmationCode: code,
-    }
+    await confirmUserSignUp(client, email, code)
 
-    const command = new ConfirmSignUpCommand(input)
+    const authRes = await authenticateUser(client, email, password)
 
-    await client.send(command)
+    const accessToken = authRes.AuthenticationResult?.AccessToken
+    const refreshToken = authRes.AuthenticationResult?.RefreshToken
 
-    const authInput: InitiateAuthCommandInput = {
-      AuthFlow: "USER_PASSWORD_AUTH",
-      ClientId: CLIENT_ID,
-      AuthParameters: {
-        USERNAME: email,
-        PASSWORD: password,
-      },
-    }
+    setAuthCookies(cookieStore, accessToken, refreshToken)
 
-    const authCommand = new InitiateAuthCommand(authInput)
-
-    const authRes = await client.send(authCommand)
-
-    cookieStore.delete("signup_email")
-    cookieStore.delete("temp_pass")
+    clearSignupCookies(cookieStore)
   } catch (error: any) {
     console.log(error)
 
