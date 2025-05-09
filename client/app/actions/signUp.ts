@@ -1,14 +1,10 @@
 "use server"
 
-import {
-  CognitoIdentityProviderClient,
-  SignUpCommand,
-  SignUpCommandInput,
-} from "@aws-sdk/client-cognito-identity-provider"
 import { ActionState } from "./types"
 import { z } from "zod"
 import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
+import { getCognitoClient, setSignUpCookies, signUpUser } from "@/lib/auth"
 
 const CLIENT_ID = process.env.COGNITO_CLIENT_ID
 const REGION = process.env.AWS_REGION
@@ -23,7 +19,7 @@ const signUpSchema = z.object({
 export type SignUpFields = z.infer<typeof signUpSchema>
 
 export async function signUp(
-  prevState: ActionState<SignUpFields>,
+  _prevState: ActionState<SignUpFields>,
   payload: FormData
 ): Promise<ActionState<SignUpFields>> {
   const cookieStore = await cookies()
@@ -52,34 +48,11 @@ export async function signUp(
   }
 
   try {
-    const client = new CognitoIdentityProviderClient({
-      region: REGION,
-    })
+    const client = getCognitoClient()
 
-    const input: SignUpCommandInput = {
-      ClientId: CLIENT_ID,
-      Username: values.email,
-      Password: values.password,
-      UserAttributes: [
-        {
-          Name: "email",
-          Value: values.email,
-        },
-      ],
-    }
+    setSignUpCookies(cookieStore, values.email, values.password)
 
-    const command = new SignUpCommand(input)
-    const response = await client.send(command)
-
-    cookieStore.set("signup_email", values.email, {
-      expires: new Date(Date.now() + 15 * 60 * 1000),
-      httpOnly: true,
-    })
-
-    cookieStore.set("temp_pass", values.password, {
-      expires: new Date(Date.now() + 15 * 60 * 1000),
-      httpOnly: true,
-    })
+    const response = await signUpUser(client, values.email, values.password)
 
     if (!response.UserSub) {
       return {
