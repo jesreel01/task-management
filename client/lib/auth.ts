@@ -10,7 +10,7 @@ import {
 import { createRemoteJWKSet, decodeJwt, jwtVerify } from "jose"
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies"
 import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
+import { redirectToSignIn } from "./utils"
 
 const CLIENT_ID = process.env.COGNITO_CLIENT_ID!
 const REGION = process.env.AWS_REGION!
@@ -24,17 +24,17 @@ export function getCognitoClient() {
 }
 
 export async function verifySession() {
-  const cookieStore = await cookies()
-
-  const accessToken = cookieStore.get("accessToken")?.value
-  if (!accessToken) throw new Error("No access token")
-
-  const unverified = decodeJwt(accessToken)
-  if (unverified.token_use !== "access") {
-    throw new Error("Expected an access token")
-  }
-
   try {
+    const cookieStore = await cookies()
+
+    const accessToken = cookieStore.get("accessToken")?.value
+    if (!accessToken) throw new Error("No access token")
+
+    const unverified = decodeJwt(accessToken)
+    if (unverified.token_use !== "access") {
+      throw new Error("Expected an access token")
+    }
+
     const { payload } = await jwtVerify(accessToken, jwks, {
       issuer,
       algorithms: ["RS256"],
@@ -44,7 +44,7 @@ export async function verifySession() {
   } catch (error) {
     console.error(error)
 
-    redirect("/sign-in")
+    redirectToSignIn()
   }
 }
 

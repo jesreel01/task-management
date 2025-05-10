@@ -10,6 +10,7 @@ import {
   getCognitoClient,
   setAuthCookies,
 } from "@/lib/auth"
+import { redirectToDashboard } from "@/lib/utils"
 
 export async function verifyEmail(
   _prevState: any,
@@ -42,5 +43,10 @@ export async function verifyEmail(
     }
   }
 
-  redirect("/dashboard")
+  redirectToDashboard()
+
+  return {
+    success: true,
+    fields: { code: "" },
+  }
 }

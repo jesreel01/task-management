@@ -12,15 +12,15 @@ const VerifyEmail = ({ email }: { email: string }) => {
 
   const [values, setValues] = useState<string[]>(Array(6).fill(""))
 
-  const [state, dispatch] = useActionState<ActionState<VerifyEmailField>, VerifyEmailField>(
-    verifyEmail,
-    {
-      fields: {
-        code: values.join(),
-      },
-      success: false,
-    }
-  )
+  const [state, dispatch, isPending] = useActionState<
+    ActionState<VerifyEmailField>,
+    VerifyEmailField
+  >(verifyEmail, {
+    fields: {
+      code: values.join(),
+    },
+    success: false,
+  })
 
   const handleSubmit = (code: string) => {
     startTransition(() =>
@@ -41,10 +41,25 @@ const VerifyEmail = ({ email }: { email: string }) => {
     if (val && index < inputRefs.length - 1) {
       inputRefs[index + 1].current?.focus()
     }
+  }
 
-    // if (updatedValues.every((char) => char !== "")) {
-    //   handleSubmit(updatedValues.join(""))
-    // }
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, index: number) => {
+    e.preventDefault()
+    const pastedData = e.clipboardData.getData("text")
+    const cleanedData = pastedData.replace(/\s/g, "").slice(0, 6)
+
+    const newValues = [...values]
+    for (let i = 0; i < cleanedData.length; i++) {
+      if (index + i < inputRefs.length) {
+        newValues[index + i] = cleanedData[i]
+      }
+    }
+    setValues(newValues)
+
+    // Focus the next empty input or the last input if all are filled
+    const nextEmptyIndex = newValues.findIndex((val) => !val)
+    const targetIndex = nextEmptyIndex === -1 ? inputRefs.length - 1 : nextEmptyIndex
+    inputRefs[targetIndex].current?.focus()
   }
 
   return (
@@ -59,7 +74,9 @@ const VerifyEmail = ({ email }: { email: string }) => {
       <div className="mb-6 flex justify-between w-full gap-2">
         {inputRefs.map((ref, i) => (
           <Input
+            value={values[i]}
             className="w-12 h-12 text-center text-lg"
+            onPaste={(e) => handlePaste(e, i)}
             ref={ref}
             key={i}
             onChange={(e) => handleChange(e, i)}
@@ -68,7 +85,12 @@ const VerifyEmail = ({ email }: { email: string }) => {
         ))}
       </div>
 
-      <Button className="w-full" onClick={() => handleSubmit(values.join(""))} type="button">
+      <Button
+        className="w-full"
+        onClick={() => handleSubmit(values.join(""))}
+        loading={isPending}
+        type="button"
+      >
         Verify and Confirm
       </Button>
 
