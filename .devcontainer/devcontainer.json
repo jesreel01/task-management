@@ -9,7 +9,8 @@
     "ghcr.io/devcontainers-extra/features/node-asdf:0": {},
     "ghcr.io/devcontainers-extra/features/terraform-asdf:2": {},
     "ghcr.io/devcontainers/features/aws-cli:1": {},
-    "ghcr.io/joshuanianji/devcontainer-features/aws-cli-persistence:1": {}
+    "ghcr.io/joshuanianji/devcontainer-features/aws-cli-persistence:1": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
   },
   "customizations": {
     "vscode": {
