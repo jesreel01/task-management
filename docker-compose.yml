@@ -37,4 +37,4 @@ services:
             - .pytest_cache/
             - .mypy_cache/
         - action: rebuild
-          path: requirements.txt
+          path: ./server/requirements.txt
