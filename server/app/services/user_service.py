@@ -4,7 +4,7 @@ class UserService:
     def create_user(self, user: UserCreate):
         return 'test'
 
-    def list_user(self):
+    async def list_user(self):
         return "list user"
 
     def get_user(self, user_id):

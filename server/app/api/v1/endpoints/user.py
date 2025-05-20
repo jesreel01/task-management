@@ -2,24 +2,29 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from app.services.user_service import UserService
 from app.schema.user import UserCreate
-from app.core.security import verify_token
+from app.core.security import get_current_user
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(
+    prefix="/users",
+    tags=["Users"],
+)
 
 
 @router.post("")
 def create_user(
     user: UserCreate,
     user_service: Annotated[UserService, Depends(UserService)],
-    token_data=Depends(verify_token),
 ):
-    print(token_data)
     return user_service.create_user(user)
 
 
 @router.get("")
-def list_users(user_service: Annotated[UserService, Depends(UserService)]):
-    return user_service.list_user()
+async def list_users(
+    user_service: Annotated[UserService, Depends(UserService)],
+    curr_user: Annotated[dict, Depends(get_current_user)]
+):
+    print(curr_user.get("sub"))
+    return await user_service.list_user()
 
 
 @router.get("/{user_id}")
