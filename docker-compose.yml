@@ -38,3 +38,28 @@ services:
             - .mypy_cache/
         - action: rebuild
           path: ./server/requirements.txt
+
+
+  db:
+    image: postgres:15
+    container_name: task-management-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=taskmanagement
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - task-management-network
+
+networks:
+  task-management-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
