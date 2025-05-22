@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI):
 
     await engine.dispose()
 
-app = FastAPI(title=get_settings().app_name)
+app = FastAPI(title=get_settings().app_name,lifespan=lifespan)
 
 
 app.include_router(v1_routers, prefix="/api/v1")
