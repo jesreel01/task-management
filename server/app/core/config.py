@@ -23,6 +23,7 @@ class CognitoSettings(BaseSettings):
 class Settings(BaseSettings):
     app_name: str = ""
     cognito: CognitoSettings = CognitoSettings()
+    database_url: str = ""
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
