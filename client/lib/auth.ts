@@ -23,6 +23,33 @@ export function getCognitoClient() {
   return new CognitoIdentityProviderClient({ region: REGION })
 }
 
+export async function signUpUser(
+  client: CognitoIdentityProviderClient,
+  email: string,
+  password: string
+) {
+  const input: SignUpCommandInput = {
+    ClientId: CLIENT_ID,
+    Username: email,
+    Password: password,
+    UserAttributes: [{ Name: "email", Value: email }],
+  }
+  return client.send(new SignUpCommand(input))
+}
+
+export async function authenticateUser(
+  client: CognitoIdentityProviderClient,
+  email: string,
+  password: string
+) {
+  const input: InitiateAuthCommandInput = {
+    AuthFlow: "USER_PASSWORD_AUTH",
+    ClientId: CLIENT_ID,
+    AuthParameters: { USERNAME: email, PASSWORD: password },
+  }
+  return client.send(new InitiateAuthCommand(input))
+}
+
 export async function verifySession() {
   try {
     const cookieStore = await cookies()
@@ -48,20 +75,6 @@ export async function verifySession() {
   }
 }
 
-export async function signUpUser(
-  client: CognitoIdentityProviderClient,
-  email: string,
-  password: string
-) {
-  const input: SignUpCommandInput = {
-    ClientId: CLIENT_ID,
-    Username: email,
-    Password: password,
-    UserAttributes: [{ Name: "email", Value: email }],
-  }
-  return client.send(new SignUpCommand(input))
-}
-
 export async function confirmUserSignUp(
   client: CognitoIdentityProviderClient,
   email: string,
@@ -75,23 +88,10 @@ export async function confirmUserSignUp(
   return client.send(new ConfirmSignUpCommand(input))
 }
 
-export async function authenticateUser(
-  client: CognitoIdentityProviderClient,
-  email: string,
-  password: string
-) {
-  const input: InitiateAuthCommandInput = {
-    AuthFlow: "USER_PASSWORD_AUTH",
-    ClientId: CLIENT_ID,
-    AuthParameters: { USERNAME: email, PASSWORD: password },
-  }
-  return client.send(new InitiateAuthCommand(input))
-}
-
 export function setAuthCookies(
   cookieStore: ReadonlyRequestCookies,
-  accessToken?: string,
-  refreshToken?: string
+  accessToken: string,
+  refreshToken: string
 ) {
   if (accessToken) {
     cookieStore.set("accessToken", accessToken, { httpOnly: true })
