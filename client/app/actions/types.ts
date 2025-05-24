@@ -5,10 +5,6 @@ export type ActionState<T> = {
   fields: T
 }
 
-export type SignInFields = {
-  email: string
-  password: string
-}
 
 export type VerifyEmailField = {
   code: string

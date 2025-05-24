@@ -1,7 +1,7 @@
 "use client"
 
-import { signIn } from "@/app/actions/signIn"
-import { ActionState, SignInFields } from "@/app/actions/types"
+import { signIn, SignInFields } from "@/app/actions/signIn"
+import { ActionState } from "@/app/actions/types"
 import AuthForm from "@/components/AuthForm"
 import AuthCard from "@/components/AuthForm"
 import { Button } from "@/components/ui/button"
@@ -24,7 +24,7 @@ const SignIn = () => {
   return (
     <AuthForm action={formAction}>
       <h5 className="mb-6 text-2xl">Task Management</h5>
-      <h6 className="mb-5">Sign Up</h6>
+      <h6 className="mb-5">Sign In</h6>
 
       <Input
         defaultValue={state.fields.email}
@@ -40,13 +40,9 @@ const SignIn = () => {
         type="password"
         className="mb-4"
       />
-      {isPending ? (
-        "loading"
-      ) : (
-        <Button type="submit" className="mb-4 w-full">
-          Login
-        </Button>
-      )}
+      <Button loading={isPending} type="submit" className="mb-4 w-full">
+        Login
+      </Button>
       <div className="text-sm">
         Don't have an account?{" "}
         <Link className="text-primary" href="/sign-up">
